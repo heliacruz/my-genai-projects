@@ -1,0 +1,3 @@
+steps:
+  - name: Use OpenAI API Key
+    run: echo "The API key is ${{ secrets.OPENAI_API_KEY }}"
