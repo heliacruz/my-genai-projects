@@ -1,4 +1,5 @@
 import streamlit as st
+import config
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -6,9 +7,7 @@ from langchain.vectorstores import FAISS
 from langchain_community.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 
-
-st.header("PDF Reader "
-          "ChatBot By H.Cruz")
+st.header("PDF Reader ChatBot By H.Cruz")
 with st.sidebar:
     st.title("Upload your Document here")
     file = st.file_uploader("Upload a PDF file and ask your question", type="pdf")
@@ -29,17 +28,17 @@ if file is not None:
     )
     chunks = text_splitter.split_text(content)
 
-    # Create embeddings and vector store
+    # Create embeddings and vector store using the API key from config
     embeddings = OpenAIEmbeddings(openai_api_key=config.OPENAI_API_KEY)
     vector_store = FAISS.from_texts(chunks, embeddings)
 
-    # Create a single text input element
+    # Create a text input element for your query
     user_input = st.text_input("Enter your query:", key="query_input")
 
     if user_input:
         matches = vector_store.similarity_search(user_input)
 
-        # Setup LLM model
+        # Setup the LLM model using the API key from config
         llm = ChatOpenAI(
             openai_api_key=config.OPENAI_API_KEY,
             temperature=0,
